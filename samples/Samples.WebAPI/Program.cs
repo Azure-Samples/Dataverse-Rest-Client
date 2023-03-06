@@ -6,13 +6,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var dataverseClient = ConfidentialClientApplicationBuilder
+var dataverseClientApplication = ConfidentialClientApplicationBuilder
                 .Create(builder.Configuration["Dataverse:ClientId"])
                 .WithClientSecret(builder.Configuration["Dataverse:ClientSecret"])
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{builder.Configuration["Dataverse:TenantId"]}/"))
                 .Build();
-dataverseClient.AddInMemoryTokenCache();
-builder.Services.AddSingleton(dataverseClient);
+dataverseClientApplication.AddInMemoryTokenCache();
+builder.Services.AddSingleton(dataverseClientApplication);
 builder.Services.AddTransient(
     sp => new ConfidentialClientAuthDelegatingHandler(sp.GetRequiredService<IConfidentialClientApplication>(), new[] { builder.Configuration["Dataverse:Scope"] })
 );

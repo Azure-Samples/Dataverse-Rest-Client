@@ -8,6 +8,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <inheritdoc/>
     public class ChangeSet: IChangeSet
     {
         private Dictionary<int, HttpContent> requests = new();
@@ -19,6 +20,7 @@
             this.baseAddress = baseAddress;
         }
 
+        /// <inheritdoc/>
         public int AddHttpRequestMessage(HttpContent request)
         {
             requestsCount++;
@@ -27,24 +29,28 @@
             return requestsCount;
         }
 
+        /// <inheritdoc/>
         public int AddCreate(string entitySetName, string jsonData)
         {
             var message = CreateHttpMessageRequest(DataverseClient.BuildRequestUrl(entitySetName), "POST", jsonData);
             return AddHttpRequestMessage(message.ToBatchHttpMessageContent());
         }
 
-        public int AddDelete(string entitySetName, Guid itemId)
+        /// <inheritdoc/>
+        public int AddDelete(string entitySetName, string key)
         {
-            var message = CreateHttpMessageRequest(DataverseClient.BuildRequestUrl(entitySetName, null, itemId), "DELETE");
+            var message = CreateHttpMessageRequest(DataverseClient.BuildRequestUrl(entitySetName, null, key), "DELETE");
+            return AddHttpRequestMessage(message.ToBatchHttpMessageContent());
+        }
+        
+        /// <inheritdoc/>
+        public int AddUpdate(string entitySetName, string key, string jsonData)
+        {
+            var message = CreateHttpMessageRequest(DataverseClient.BuildRequestUrl(entitySetName, null, key), "PATCH", jsonData);
             return AddHttpRequestMessage(message.ToBatchHttpMessageContent());
         }
 
-        public int AddUpdate(string entitySetName, Guid itemId, string jsonData)
-        {
-            var message = CreateHttpMessageRequest(DataverseClient.BuildRequestUrl(entitySetName, null, itemId), "PATCH", jsonData);
-            return AddHttpRequestMessage(message.ToBatchHttpMessageContent());
-        }
-
+        /// <inheritdoc/>
         public MultipartContent ToMultipartContent()
         {
             var content = new MultipartContent("mixed", $"changeset_{Guid.NewGuid()}");
@@ -63,6 +69,7 @@
             Content = JsonContent.Create(body)
         };
 
+        /// <inheritdoc/>
         public async Task<List<ChangeSetResult>> ProcessAsync(HttpContent content, CancellationToken cancellationToken)
         {
             var multipartResponse = await content.ReadAsMultipartAsync(cancellationToken);

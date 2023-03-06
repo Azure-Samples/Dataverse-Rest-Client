@@ -187,10 +187,9 @@
         internal static string BuildRequestUrl(
             string entitySetName,
             string? subEntitySetName = null,
-            Guid? itemId = null,
+            string? key = null,
             string? fetchXml = null,
             string? select = null,
-            string? inlineCount = null,
             string? filter = null,
             string? orderby = null,
             string? expand = null,
@@ -211,11 +210,10 @@
 
                 return false;
             };
-            urlBuilder.Append((!itemId.HasValue) ? string.Empty : ("(" + itemId.Value.ToCleanString() + ")"));
+            urlBuilder.Append(string.IsNullOrEmpty(key) ? string.Empty : "(" + key.Replace("{", string.Empty).Replace("}", string.Empty).Replace(" ", string.Empty) + ")");
             urlBuilder.Append(string.IsNullOrEmpty(subEntitySetName) ? string.Empty : ("/" + subEntitySetName));
             AppendQueryString("fetchXml={0}", fetchXml, true);
             AppendQueryString("$select={0}", select, false);
-            AppendQueryString("$inlinecount={0}", inlineCount, false);
             AppendQueryString("$orderby={0}", orderby, false);
             AppendQueryString("$filter={0}", filter, false);
             AppendQueryString("$top={0}", (!top.HasValue) ? string.Empty : top.ToString()!, false);

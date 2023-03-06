@@ -28,8 +28,7 @@ namespace Samples.WebAPI.Controllers
         {
             var account = await this.dataverseClient.ListAsync(
                 "accounts",
-                itemId: id,
-                withAnnotations: true,
+                new RequestOptions(itemId: id, withAnnotations: true),
                 convert: (e, _) => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
             return account.First();
         }
@@ -39,7 +38,7 @@ namespace Samples.WebAPI.Controllers
         {
             return await this.dataverseClient.ListAsync(
                 "accounts",
-                withAnnotations: true,
+                new RequestOptions() { WithAnnotations = true },
                 convert: (e, _) => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
         }
 
@@ -48,10 +47,9 @@ namespace Samples.WebAPI.Controllers
         {
             return await this.dataverseClient.ListAsync(
                 "accounts",
-                expand: "primarycontactid",
-                expandSelect: "fullname,contactid",
-                filter: $"startswith(primarycontactid/fullname, '{primaryContactName}')",
-                withAnnotations: true);
+                new RequestOptions(
+                    expand: "primarycontactid", expandSelect: "fullname,contactid",
+                    filter: $"startswith(primarycontactid/fullname, '{primaryContactName}')", withAnnotations: true));
 
         }
 
@@ -71,13 +69,13 @@ namespace Samples.WebAPI.Controllers
             var account = accounts.First();
             this._logger.LogInformation($"Updating account {account.Name} with contact {contact.GetProperty("fullname")}");
 
-            return await this.dataverseClient.PatchAsync<ResponseAccount>("accounts", JsonSerializer.Serialize(new RequestAccount() { PrimaryContact = contact.GetProperty("contactid").GetGuid().ToString() }, options: new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }), account.AccountId, convert: e => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            return await this.dataverseClient.PatchAsync<ResponseAccount>("accounts", JsonSerializer.Serialize(new RequestAccount() { PrimaryContact = contact.GetProperty("contactid").GetGuid().ToString() }, options: new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }), account.AccountId.ToString(), convert: e => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
         }
 
         [HttpGet("SearchAccountByName", Name = "SearchAccountByName")]
         public async Task<JsonArrayResponse<ResponseAccount?>> SearchAccountByName(string name)
         {
-            return await this.dataverseClient.ListAsync("accounts", filter: $"startswith(name, '{name}')", withAnnotations: true, convert: (e, _) => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            return await this.dataverseClient.ListAsync("accounts", new RequestOptions(filter: $"startswith(name, '{name}')", withAnnotations: true), convert: (e, _) => e.Deserialize<ResponseAccount>(new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
         }
 
         [HttpGet("BatchInsert", Name = "BatchInsert")]

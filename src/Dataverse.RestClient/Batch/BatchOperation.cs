@@ -8,6 +8,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Manages requests that are sent in a single batch.
+    /// </summary>
     public class BatchOperation: IBatchOperation
     {
         private readonly IDataverseClient dataverseClient;
@@ -29,23 +32,31 @@
             return contentCount;
         }
 
+        /// <inheritdoc/>
         public int AddChangeSet(IChangeSet changeSet)
         {
             var content = changeSet.ToMultipartContent();
             return StoreRequest(content, changeSet);
         }
 
+        /// <inheritdoc/>
         public int AddContent(HttpContent content)
         {
             return StoreRequest(content, null);
         }
 
+        /// <summary>
+        /// Send the batch request and return raw response from API. Use ProcessAsync to send request and parse the response..
+        /// </summary>
+        /// <param name="cancellationToken">CancellationToken</param>
+        /// <returns>Response from API.</returns>
         public async Task<HttpResponseMessage> SendAsync(CancellationToken cancellationToken = default)
         {
             var response = await this.dataverseClient.SendBatchAsync(Guid.NewGuid().ToString(), this.requests.Values.Select(t => t.HttpContent).ToList(), cancellationToken);
             return response;
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<BatchOperationResult>> ProcessAsync(CancellationToken cancellationToken = default)
         {
             var response = await this.SendAsync(cancellationToken);
@@ -76,13 +87,15 @@
             return results;
         }
 
-
+        /// <inheritdoc/>
         public HttpRequestMessage CreateHttpMessageRequest(string url, string method = "POST", string body = "{}") => new HttpRequestMessage(new HttpMethod(method), new Uri(this.baseAddress + url, UriKind.Absolute))
         {
             Version = new Version(1, 1),
             Content = JsonContent.Create(body)
         };
 
+
+        /// <inheritdoc/>
         public IChangeSet CreateChangeSet()
         {
             return new ChangeSet(this.baseAddress);

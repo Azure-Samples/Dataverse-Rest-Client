@@ -13,6 +13,7 @@ namespace Dataverse.RestClient
     using System.Text.Json;
     using System.Threading.Tasks;
 
+    /// <inheritdoc/>
     public partial class DataverseClient : IDataverseClient
     {
         private readonly HttpClient httpClient;
@@ -24,6 +25,12 @@ namespace Dataverse.RestClient
             this.httpClient = ConfigureHttpClient(httpClient, options);
         }
 
+        /// <summary>
+        /// Setup <paramref name="httpClient"/> with default headers and base address.
+        /// </summary>
+        /// <param name="httpClient">HttpClient</param>
+        /// <param name="options">Dataverse API details.</param>
+        /// <returns>HttpClient</returns>
         public virtual HttpClient ConfigureHttpClient(HttpClient httpClient, DataverseClientOptions options)
         {
             httpClient.BaseAddress = new Uri(this.baseAddress);
@@ -39,158 +46,121 @@ namespace Dataverse.RestClient
             return httpClient;
         }
 
+        /// <inheritdoc/>
         public Task<JsonArrayResponse> ListAsync(
             string entitySetName,
-            string? subEntitySetName = null,
-            Guid? itemId = null,
-            string? fetchXml = null,
-            string? select = null,
-            string? inlineCount = null,
-            string? filter = null,
-            int? top = null,
-            string? orderby = null,
-            string? expand = null,
-            string? expandSelect = null,
-            bool withAnnotations = false,
+            RequestOptions? requestOptions = null,
             Func<JsonElement, object?, JsonElement>? convert = null,
             object? eventArgs = null,
             JsonArrayResponse? previousResponse = null,
             CancellationToken cancellationToken = default)
         {
             return this.GetJsonArrayResponse(BuildRequestUrl(entitySetName,
-                                                             subEntitySetName,
-                                                             itemId,
-                                                             fetchXml,
-                                                             select,
-                                                             inlineCount,
-                                                             filter,
-                                                             orderby,
-                                                             expand,
-                                                             top,
-                                                             expandSelect), convert, withAnnotations, previousResponse, eventArgs, cancellationToken: cancellationToken);
+                                                             requestOptions?.SubEntitySetName,
+                                                             requestOptions?.GetKey(),
+                                                             requestOptions?.FetchXml,
+                                                             requestOptions?.Select,
+                                                             requestOptions?.Filter,
+                                                             requestOptions?.OrderBy,
+                                                             requestOptions?.Expand,
+                                                             requestOptions?.Top,
+                                                             requestOptions?.ExpandSelect), convert, requestOptions?.WithAnnotations ?? true, previousResponse, eventArgs, cancellationToken: cancellationToken);
         }
-
+        
+        /// <inheritdoc/>
         public Task<JsonArrayResponse<TData>> ListAsync<TData>(
             string entitySetName,
-            string? subEntitySetName = null,
-            Guid? itemId = null,
-            string? fetchXml = null,
-            string? select = null,
-            string? inlineCount = null,
-            string? filter = null,
-            int? top = null,
-            string? orderby = null,
-            string? expand = null,
-            string? expandSelect = null,
-            bool withAnnotations = false,
+            RequestOptions? requestOptions = null,
             Func<JsonElement, object?, TData>? convert = null,
             object? eventArgs = null,
             JsonArrayResponse<TData>? previousResponse = null,
             CancellationToken cancellationToken = default)
         {
             return this.GetJsonArrayResponse(BuildRequestUrl(entitySetName,
-                                                             subEntitySetName,
-                                                             itemId,
-                                                             fetchXml,
-                                                             select,
-                                                             inlineCount,
-                                                             filter,
-                                                             orderby,
-                                                             expand,
-                                                             top,
-                                                             expandSelect), convert, withAnnotations, previousResponse, eventArgs, cancellationToken: cancellationToken);
+                                                             requestOptions?.SubEntitySetName,
+                                                             requestOptions?.GetKey(),
+                                                             requestOptions?.FetchXml,
+                                                             requestOptions?.Select,
+                                                             requestOptions?.Filter,
+                                                             requestOptions?.OrderBy,
+                                                             requestOptions?.Expand,
+                                                             requestOptions?.Top,
+                                                             requestOptions?.ExpandSelect), convert, requestOptions?.WithAnnotations ?? true, previousResponse, eventArgs, cancellationToken: cancellationToken);
 
         }
 
+        /// <inheritdoc/>
         public Task<JsonArrayResponse<TData, TEventArgs>> ListAsync<TData, TEventArgs>(
             string entitySetName,
-            string? subEntitySetName = null,
-            Guid? itemId = null,
-            string? fetchXml = null,
-            string? select = null,
-            string? inlineCount = null,
-            string? filter = null,
-            int? top = null,
-            string? orderby = null,
-            string? expand = null,
-            string? expandSelect = null,
-            bool withAnnotations = false,
+            RequestOptions? requestOptions = null,
             Func<JsonElement, TEventArgs?, TData>? convert = null,
             TEventArgs? eventArgs = default,
             JsonArrayResponse<TData, TEventArgs>? previousResponse = null,
             CancellationToken cancellationToken = default)
         {
             return this.GetJsonArrayResponse(BuildRequestUrl(entitySetName,
-                                                             subEntitySetName,
-                                                             itemId,
-                                                             fetchXml,
-                                                             select,
-                                                             inlineCount,
-                                                             filter,
-                                                             orderby,
-                                                             expand,
-                                                             top,
-                                                             expandSelect), convert, withAnnotations, previousResponse, eventArgs, cancellationToken: cancellationToken);
+                                                             requestOptions?.SubEntitySetName,
+                                                             requestOptions?.GetKey(),
+                                                             requestOptions?.FetchXml,
+                                                             requestOptions?.Select,
+                                                             requestOptions?.Filter,
+                                                             requestOptions?.OrderBy,
+                                                             requestOptions?.Expand,
+                                                             requestOptions?.Top,
+                                                             requestOptions?.ExpandSelect), convert, requestOptions?.WithAnnotations ?? true, previousResponse, eventArgs, cancellationToken: cancellationToken);
 
         }
 
+        /// <inheritdoc/>
         public Task<HttpResponseMessage> ListAsStreamAsync(
             string entitySetName,
-            string? subEntitySetName = null,
-            Guid? itemId = null,
-            string? fetchXml = null,
-            string? select = null,
-            string? inlineCount = null,
-            string? filter = null,
-            int? top = null,
-            string? orderby = null,
-            string? expand = null,
-            string? expandSelect = null,
-            bool withAnnotations = false,
+            RequestOptions? requestOptions = null,
             CancellationToken cancellationToken = default)
         {
             return this.GetHttpResponseMessageWithoutContent(BuildRequestUrl(entitySetName,
-                                                             subEntitySetName,
-                                                             itemId,
-                                                             fetchXml,
-                                                             select,
-                                                             inlineCount,
-                                                             filter,
-                                                             orderby,
-                                                             expand,
-                                                             top,
-                                                             expandSelect), withAnnotations, cancellationToken: cancellationToken);
+                                                             requestOptions?.SubEntitySetName,
+                                                             requestOptions?.GetKey(),
+                                                             requestOptions?.FetchXml,
+                                                             requestOptions?.Select,
+                                                             requestOptions?.Filter,
+                                                             requestOptions?.OrderBy,
+                                                             requestOptions?.Expand,
+                                                             requestOptions?.Top,
+                                                             requestOptions?.ExpandSelect), requestOptions?.WithAnnotations ?? true, cancellationToken: cancellationToken);
 
         }
 
+        /// <inheritdoc/>
         public Task<HttpResponseMessage> PatchAsync(
             string entitySetName,
             string jsonData,
-            Guid itemId,
+            string key,
             string? subEntitySetName = null,
             bool withRepresentation = false,
             bool withAnnotations = false,
             CancellationToken cancellationToken = default)
         {
-            return this.PatchAsync(BuildRequestUrl(entitySetName, itemId: itemId, subEntitySetName: subEntitySetName), jsonData, withRepresentation, withAnnotations, cancellationToken);
+            return this.PatchAsync(BuildRequestUrl(entitySetName, key: key, subEntitySetName: subEntitySetName), jsonData, withRepresentation, withAnnotations, cancellationToken);
         }
 
+        /// <inheritdoc/>
         public Task<HttpResponseMessage> PatchAsync(
             string entitySetName,
             Stream data,
-            Guid itemId,
+            string key,
             string? subEntitySetName = null,
             bool withRepresentation = false,
             bool withAnnotations = false,
             CancellationToken cancellationToken = default)
         {
-            return this.PatchAsync(BuildRequestUrl(entitySetName, itemId: itemId, subEntitySetName: subEntitySetName), data, withRepresentation, withAnnotations, cancellationToken);
+            return this.PatchAsync(BuildRequestUrl(entitySetName, key: key, subEntitySetName: subEntitySetName), data, withRepresentation, withAnnotations, cancellationToken);
         }
 
+        /// <inheritdoc/>
         public async Task<T?> PatchAsync<T>(
             string entitySetName,
             string jsonData,
-            Guid itemId,
+            string key,
             string? subEntitySetName = null,
             bool withAnnotations = false,
             Func<JsonElement, T>? convert = null,
@@ -199,7 +169,7 @@ namespace Dataverse.RestClient
             var responseMessage = await this.PatchAsync(
                 entitySetName,
                 jsonData,
-                itemId,
+                key,
                 subEntitySetName,
                 true,
                 withAnnotations,
@@ -219,11 +189,12 @@ namespace Dataverse.RestClient
             throw await DataverseWebApiException.Parse(responseMessage);
         }
 
+        /// <inheritdoc/>
         public Task<HttpResponseMessage> PostAsync(
             string entitySetName,
             string jsonData,
             string? subEntitySetName = null,
-            Guid? itemId = null,
+            string? key = null,
             string? select = null,
             string? expand = null,
             bool withRepresentation = false,
@@ -233,23 +204,24 @@ namespace Dataverse.RestClient
             return this.PostAsync(BuildRequestUrl(
                 entitySetName,
                 subEntitySetName: subEntitySetName,
-                itemId: itemId,
+                key: key,
                 select: select,
                 expand: expand), jsonData, withRepresentation, withAnnotations, cancellationToken);
         }
 
+        /// <inheritdoc/>
         public async Task<EntityReference> PostAsync(
             string entitySetName,
             string jsonData,
             string? subEntitySetName = null,
-            Guid? itemId = null,
+            string? key = null,
             CancellationToken cancellationToken = default)
         {
             var responseMessage = await this.PostAsync(
                 entitySetName,
                 jsonData,
                 subEntitySetName,
-                itemId,
+                key,
                 null,
                 null,
                 false,
@@ -265,11 +237,12 @@ namespace Dataverse.RestClient
             throw await DataverseWebApiException.Parse(responseMessage);
         } 
 
+        /// <inheritdoc/>
         public async Task<T?> PostAsync<T>(
             string entitySetName,
             string jsonData,
             string? subEntitySetName = null,
-            Guid? itemId = null,
+            string? key = null,
             string? select = null,
             string? expand = null,
             bool withAnnotations = false,
@@ -280,7 +253,7 @@ namespace Dataverse.RestClient
                 entitySetName,
                 jsonData,
                 subEntitySetName,
-                itemId,
+                key,
                 select,
                 expand,
                 true,
@@ -301,11 +274,13 @@ namespace Dataverse.RestClient
             throw await DataverseWebApiException.Parse(responseMessage);
         }
 
-        public Task<HttpResponseMessage> DeleteAsync(string entitySetName, Guid? itemId, CancellationToken cancellationToken = default)
+        /// <inheritdoc/>
+        public Task<HttpResponseMessage> DeleteAsync(string entitySetName, string key, CancellationToken cancellationToken = default)
         {
-            return this.DeleteAsync(BuildRequestUrl(entitySetName, itemId: itemId), cancellationToken);
+            return this.DeleteAsync(BuildRequestUrl(entitySetName, key: key), cancellationToken);
         }
 
+        /// <inheritdoc/>
         public async Task<HttpResponseMessage> SendBatchAsync(string batchId, IEnumerable<HttpContent> contents, CancellationToken cancellationToken = default)
         {
             var content = new MultipartContent("mixed", $"batch_{batchId}");
@@ -326,6 +301,7 @@ namespace Dataverse.RestClient
             return response;
         }
 
+        /// <inheritdoc/>
         public IBatchOperation CreateBatchOperation()
         {
             return new BatchOperation(this, this.baseAddress);

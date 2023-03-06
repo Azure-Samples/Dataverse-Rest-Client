@@ -11,20 +11,13 @@
           bool expandAttributes = true)
         {
             var metatadatas = await dataverseClient.ListAsync("EntityDefinitions",
-                                                              null,
-                                                              new Guid?(),
-                                                              null,
-                                                              "MetadataId, LogicalName, DisplayName, EntitySetName, PrimaryIdAttribute, PrimaryNameAttribute",
-                                                              null,
-                                                              "LogicalName eq '" + logicalName + "'",
-                                                              new int?(),
-                                                              null,
-                                                              expandAttributes ? "Attributes" : null,
-                                                              null,
-                                                              false,
-                                                              (metadataJson, eventArgs) => new EntityMetadata(metadataJson),
-                                                              null,
-                                                              null);
+                new RequestOptions(
+                    select: "MetadataId, LogicalName, DisplayName, EntitySetName, PrimaryIdAttribute, PrimaryNameAttribute",
+                    filter: $"LogicalName eq '{logicalName}'",
+                    expand: expandAttributes ? "Attributes" : null,
+                    withAnnotations: false
+                ),
+                convert: (metadataJson, eventArgs) => new EntityMetadata(metadataJson));
             return metatadatas.FirstOrDefault();
         }
 
@@ -37,20 +30,11 @@
             do
             {
                 metadataRecordsResponse = await dataverseClient.ListAsync("EntityDefinitions",
-                                                                              null,
-                                                                              new Guid?(),
-                                                                              null,
-                                                                              "MetadataId, LogicalName, DisplayName, EntitySetName, PrimaryIdAttribute, PrimaryNameAttribute",
-                                                                              null,
-                                                                              null,
-                                                                              new int?(),
-                                                                              null,
-                                                                              null,
-                                                                              null,
-                                                                              false,
-                                                                              null,
-                                                                              null,
-                                                                              metadataRecordsResponse);
+                     new RequestOptions(
+                    select: "MetadataId, LogicalName, DisplayName, EntitySetName, PrimaryIdAttribute, PrimaryNameAttribute",
+                    expand: expandAttributes ? "Attributes" : null,
+                    withAnnotations: false),
+                    previousResponse: metadataRecordsResponse);
                 foreach (JsonElement metadataJson in (JsonArrayResponse<JsonElement, object>)metadataRecordsResponse)
                     metadataRecords.Add(new EntityMetadata(metadataJson));
                 metadataRecordsResponse.Clear();
