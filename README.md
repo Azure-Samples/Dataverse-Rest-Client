@@ -2,6 +2,8 @@
 
 This project is a .NET 7 library that provides a wrapper around the [Microsoft Dataverse Web API](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/overview) to make it easier to use in .NET applications. The library is inspired by [WebAPIService class library](https://github.com/microsoft/PowerApps-Samples/tree/master/dataverse/webapi/C%23-NETx/WebAPIService).
 
+> This is NOT an official SDK. This sample code is provided 'as-is' with no warranty for reuse. This sample is stripped down version of [WebAPIService class library](https://github.com/microsoft/PowerApps-Samples/tree/master/dataverse/webapi/C%23-NETx/WebAPIService) with methods to formulate OData query thus simplifying the usage of basic CRUD operatioons. Refer to the [documentation](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/get-started-dynamics-365-web-api-csharp) or the [PowerPlatform-DataverseServiceClient](https://github.com/microsoft/PowerPlatform-DataverseServiceClient) for the official approach.
+
 ## Features
 - **Authentication**: The library supports authentication to Dataverse using [OAuth 2.0 Client Credential](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/authenticate-oauth).
 - **Compose ODATA Query**: The library simplifies development by composing right query using ODATA specification.
