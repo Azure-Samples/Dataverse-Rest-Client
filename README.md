@@ -1,6 +1,6 @@
 # Introduction
 
-This project is a .NET 7 library that provides a wrapper around the [Microsoft Dataverse Web API](https://docs.microsoft.com/en-us/powerapps/developer/data-platform/webapi/overview-web-api) to make it easier to use in .NET applications. The library is inspired by [WebAPIService class library](https://github.com/microsoft/PowerApps-Samples/tree/master/dataverse/webapi/C%23-NETx/WebAPIService).
+This project is a .NET 7 library that provides a wrapper around the [Microsoft Dataverse Web API](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/overview) to make it easier to use in .NET applications. The library is inspired by [WebAPIService class library](https://github.com/microsoft/PowerApps-Samples/tree/master/dataverse/webapi/C%23-NETx/WebAPIService).
 
 ## Features
 - **Authentication**: The library supports authentication to Dataverse using [OAuth 2.0 Client Credential](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/authenticate-oauth).
